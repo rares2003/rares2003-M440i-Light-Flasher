@@ -2,7 +2,7 @@
 // ReadDataByIdentifier ONLY. No session changes, writes, routines or actuator commands.
 const {Diag,replyTo}=require('./tasu');
 const DID=[0xE3,0xB8], IDENT=[0xF1,0x50];
-const FLM={left:{address:0x43,index:'0F 26 C0'},right:{address:0x44,index:'0F 26 D0'}};
+const FLM={left:{address:0x43,indices:['0F 26 C0','0F 26 C8']},right:{address:0x44,indices:['0F 26 D0','0F 26 D8']}};
 const FEEDBACK=[[0xD6,0xDB],[0xD7,0xA7],[0xD9,0xFC]];
 const hex=a=>Array.from(a||[]).map(x=>x.toString(16).toUpperCase().padStart(2,'0')).join(' ');
 class Reader {
@@ -39,7 +39,7 @@ class Reader {
        const index=hex(ident.slice(3));
        onResult({side,kind:'identity',reply:hex(ident),index});
        if(!stillAllowed())return;
-       if(index!==m.index)throw Error('Unsupported FLM identity: '+index);
+       if(!m.indices.includes(index))throw Error('Unsupported FLM identity: '+index);
        this.flmVerified[m.address]=index;
        for(const did of FEEDBACK){
          if(!stillAllowed())return;
