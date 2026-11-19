@@ -44,12 +44,12 @@ mgu.run({async start(ctx){
    if(ui.isVisible('MAIN')){
      let cfgText;try{const cfg=getConfig();cfgText=(settings.get('fastTest')===true?'FAST TEST | ':'')+cfg.label+' | '+cfg.intervalMs+' ms requested | '+cfg.durationMs/1000+' s'}catch(e){cfgText='Invalid settings: select 100 ms or above'}
      ui.text('FLASH_CONFIG',cfgText);
-     ui.text('FLASH_STATUS',(flash.cleanupUnconfirmed?'LOCKED: previous cleanup not confirmed':flash.status)+' | '+(g.blockedBy||'P / stationary')+' | OEM beam '+(lastCombined||'unknown')+(lastError?' | '+lastError:''));
+     ui.text('FLASH_STATUS',(flash.cleanupUnconfirmed?'LOCKED: previous cleanup not confirmed':flash.status)+' | '+(g.blockedBy||'motion guard off')+' | OEM beam '+(lastCombined||'unknown')+(lastError?' | '+lastError:''));
      const lv=lever.snapshot();ui.text('LEVER_STATUS','Lever'+(leverBackground()?' (also closed)':'')+': '+(settings.get('leverTrigger')===true?lv.reason+' | triggers '+lv.triggers+(lv.rejected?' | ignored '+lv.rejected:''):'off (enable in settings)'));
      ui.text('FLASH_RESULT',(gaps?'Actual START gap '+gaps.meanMs+' ms | ':'')+returnState+(flashExportError?' | Save error: '+flashExportError:flashExport?' | Log saved':''));
    }
    if(!ui.isVisible('DIAGNOSTICS'))return;
-   ui.text('DIAG_STATE','TASU: '+(reader.diag.available?'available':(reader.diag.error||'unavailable'))+' | '+(g.blockedBy||'P / stationary')+' | diagnostics '+(enabled()?'ON':'OFF')+'\nOEM beam '+(lastCombined||'unknown')+' | Background '+(bg.enabled?'ON':'OFF')+' / '+bg.startReason+' | BDC '+(reader.index||'not checked')+'\n'+(lastError?'ERROR: '+lastError:connectionState));
+   ui.text('DIAG_STATE','TASU: '+(reader.diag.available?'available':(reader.diag.error||'unavailable'))+' | '+(g.blockedBy||'motion guard off')+' | diagnostics '+(enabled()?'ON':'OFF')+'\nOEM beam '+(lastCombined||'unknown')+' | Background '+(bg.enabled?'ON':'OFF')+' / '+bg.startReason+' | BDC '+(reader.index||'not checked')+'\n'+(lastError?'ERROR: '+lastError:connectionState));
    ui.text('DIAG_RESULT','Last flash: '+flash.status+'\nReturn: '+returnState+'\n'+(gaps?'START gap '+gaps.minMs+'-'+gaps.maxMs+' ms, mean '+gaps.meanMs+' ms (not optical timing)':'No timing sample yet')+(flash.fast?'\nFast test: PWM 0 off L '+fastOk(flash.fast.offVerified.left)+' / R '+fastOk(flash.fast.offVerified.right)+(timing.pwm0OffResponses?', off reply mean '+timing.pwm0OffResponses.meanMs+' ms':'')+(timing.startResponses?', on reply mean '+timing.startResponses.meanMs+' ms':''):'')+'\n'+(flashExportError?'Auto-save failed: '+flashExportError:flashExport?'Flash log: '+flashExport:'No new flash export'));
    ui.text('DIAG_CAPTURE',c.reason+' | Reads '+c.rawCount+' | Errors '+c.failures+' | '+feedbackStatus);
    const f=feedback[feedback.length-1],d=f?Feedback.sampleState(f):null;

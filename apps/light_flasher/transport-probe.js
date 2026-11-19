@@ -8,7 +8,7 @@ async function probe(diag,interval,allowed,now=Date.now,delay=sleep){
  if(!allowedIntervals.includes(interval))throw Error('Invalid interval');
  if(!diag.available||!allowed())throw Error('Enable diagnostics and select P');
  const t0=now(),time=()=>now()-t0;
- const records=[{side:'left',address:0x43,expected:'62 F1 50 0F 26 C0',accepted:['62 F1 50 0F 26 C0','62 F1 50 0F 26 C8']},{side:'right',address:0x44,expected:'62 F1 50 0F 26 D0',accepted:['62 F1 50 0F 26 D0','62 F1 50 0F 26 D8']}];
+ const records=[{side:'left',address:0x43,expected:'62 F1 50 0F 26 C0'},{side:'right',address:0x44,expected:'62 F1 50 0F 26 D0'}];
  const transportEvents=[],jobs=[];
  const result={requestedIntervalMs:interval,startedAt:new Date(t0).toISOString(),records,transportEvents,finished:false,cancelled:false};
  let listening=true;
@@ -19,7 +19,7 @@ async function probe(diag,interval,allowed,now=Date.now,delay=sleep){
   const u=f.uds||[];
   if(u[0]===0x7f&&u[1]===0x22&&u[2]===0x78){r.pendingMs=time();return}
   if(!(u[0]===0x62&&u[1]===0xf1&&u[2]===0x50)&&!(u[0]===0x7f&&u[1]===0x22))return;
-  r.replyMs=time();r.reply=hex(u);r.identityMatches=r.accepted.includes(r.reply);
+  r.replyMs=time();r.reply=hex(u);r.identityMatches=r.reply===r.expected;
  };
  const event=(kind,value)=>{if(transportEvents.length<20)transportEvents.push({ms:time(),kind,value:String(value)})};
  const onErr=e=>event('tasError',e),onReject=e=>event('tasReject',e);
