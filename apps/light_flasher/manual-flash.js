@@ -3,7 +3,7 @@
 const {replyTo}=require('./tasu');
 const {config}=require('./flash-config');
 const Feedback=require('./feedback');
-const units=Object.freeze([{address:0x43,index:'0F26C0',side:'left'},{address:0x44,index:'0F26D0',side:'right'}]);
+const units=Object.freeze([{address:0x43,index:'0F26C8',side:'left'},{address:0x44,index:'0F26D8',side:'right'}]);
 const hex=b=>Array.from(b||[]).map(x=>x.toString(16).padStart(2,'0').toUpperCase()).join('');
 // Channel 8 = high beam LEDs; PWM 60 %, ECU timeout 1 s. Fast test: PWM 0 instead of STOP.
 const ON=Object.freeze([0x01,0xA5,0x4B,8,60,1]),OFF_PWM0=Object.freeze([0x01,0xA5,0x4B,8,0,1]);
