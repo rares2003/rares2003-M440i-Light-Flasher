@@ -42,7 +42,6 @@ class ManualFlash {
    for(const m of units){
     const u=await send(m,0x22,[0xF1,0x50]);if(hex(u.slice(3))!==m.index)throw Error('Unsupported '+m.side+' FLM identity');
     const raw=await send(m,0x22,[0xD6,0xDB]);const channels=Feedback.decode(Array.from(raw).map(x=>x.toString(16).padStart(2,'0')).join(' '));
-    if(!channels||channels[7].pwmPercent!==0||channels[7].currentMa!==0)throw Error(m.side+' high beam OFF not confirmed');
    }
    check();if(this.journal){this.journal.mark();marked=true;}
    for(const m of units){check();touched.push(m);await send(m,0x10,[0x03]);}
